@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenCode IDE</title>
+
+  <!-- ✅ Safe CSP for Electron + Flask -->
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="
+      default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob:;
+      connect-src 'self' http://127.0.0.1:5000 http://localhost:5000;
+      img-src 'self' data:;
+      font-src 'self' data:;
+      style-src 'self' 'unsafe-inline';
+    "
+  />
+
+  <style>
+    :root {
+      --bg: #1e1e1e;
+      --side: #252526;
+      --accent: #0dbd8b;
+      --text: #dcdcdc;
+      --muted: #858585;
+      --output-bg: #111;
+    }
+
+    html, body {
+      height: 100%;
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: "Segoe UI", sans-serif;
+    }
+
+    .toolbar {
+      height: 42px;
+      background: var(--side);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 0 10px;
+      border-bottom: 1px solid #2b2b2b;
+    }
+
+    .btn {
+      padding: 6px 10px;
+      border-radius: 6px;
+      background: transparent;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      color: var(--text);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .btn.primary {
+      background: var(--accent);
+      color: #000;
+      border: none;
+    }
+
+    .spacer {
+      flex: 1;
+    }
+
+    #main {
+      display: flex;
+      height: calc(100% - 42px);
+    }
+
+    .sidebar {
+      width: 220px;
+      background: var(--side);
+      border-right: 1px solid #2b2b2b;
+      padding: 8px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+
+    .editor-area {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .tabs {
+      height: 32px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 8px;
+      background: #111;
+      border-bottom: 1px solid #222;
+    }
+
+    .tab {
+      padding: 4px 10px;
+      border-radius: 4px;
+      color: var(--muted);
+      cursor: pointer;
+      -webkit-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      transition: background 0.2s;
+    }
+
+    .tab.active {
+      background: #222;
+      color: var(--text);
+    }
+
+    #editor {
+      flex: 1;
+      min-height: 200px;
+    }
+
+    #output {
+      height: 140px;
+      background: var(--output-bg);
+      color: #9dfc9e;
+      padding: 10px;
+      font-family: Consolas, monospace;
+      overflow-y: auto;
+      border-top: 1px solid #222;
+      white-space: pre-wrap;
+    }
+
+    #status {
+      height: 24px;
+      background: var(--side);
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      font-size: 13px;
+      border-top: 1px solid #222;
+    }
+
+    #funcList {
+      list-style: none;
+      padding-left: 0;
+      margin: 0;
+    }
+
+    #funcList li {
+      margin: 4px 0;
+      color: var(--muted);
+      font-size: 14px;
+      cursor: pointer;
+      transition: color 0.15s;
+    }
+
+    #funcList li:hover {
+      color: var(--text);
+    }
+  </style>
+</head>
+
+<body>
+    <header class="toolbar">
+    <button id="newBtn" class="btn">New</button>
+    <button id="openBtn" class="btn">Open</button>
+    <button id="saveBtn" class="btn">Save</button>
+    <button id="saveAsBtn" class="btn">Save As</button>
+    <button id="runBtn" class="btn primary">Run ▶</button>
+    <div class="spacer"></div>
+    <button id="themeBtn" class="btn">Toggle Theme</button>
+  </header>
+
+  <main id="main">
+    <aside class="sidebar" id="sidebar">
+      <strong>functions/</strong>
+      <ul id="funcList"><li>Loading...</li></ul>
+    </aside>
+
+    <section class="editor-area">
+      <div class="tabs" id="tabs"></div>
+      <div id="editor"></div>
+      <pre id="output">Output will appear here...</pre>
+      <div id="status">Ready</div>
+    </section>
+  </main>
+
+  <script src="../node_modules/monaco-editor/min/vs/loader.js"></script>
+  <script src="renderer.js"></script>
+</body>
+</html>

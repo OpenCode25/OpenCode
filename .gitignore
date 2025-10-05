@@ -1,0 +1,7 @@
+﻿node_modules/
+dist/
+build/
+*.exe
+*.dll
+*.log
+__pycache__/
